@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture - terraform-azure-virtual-machine-windows</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0c0b;color:#f5f2eb;font-family:'Courier New',monospace;line-height:1.7}
+a{color:#c8420a;text-decoration:none}a:hover{text-decoration:underline}
+.container{max-width:1200px;margin:0 auto;padding:2rem}
+.badge{display:inline-block;background:#0078D4;color:#fff;padding:0.3rem 1rem;border-radius:4px;font-size:0.85rem;margin-bottom:1.5rem}
+h1{font-size:2.2rem;color:#c8420a;border-bottom:2px solid #c8420a;padding-bottom:0.5rem;margin-bottom:1.5rem}
+h2{font-size:1.5rem;color:#c8420a;margin:2rem 0 1rem;border-left:4px solid #c8420a;padding-left:0.75rem}
+h3{font-size:1.1rem;color:#f5f2eb;margin:1.2rem 0 0.5rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1rem 0}
+.card{background:#161816;border:1px solid #2a2d2a;border-radius:8px;padding:1.2rem;transition:border-color 0.2s}.card:hover{border-color:#c8420a}
+.card .num{font-size:2rem;color:#c8420a;font-weight:bold}
+.card .label{color:#a0a0a0;font-size:0.85rem}
+.card .value{color:#f5f2eb;font-size:1rem;margin-top:0.25rem}
+.arch-diagram{background:#161816;border:1px solid #2a2d2a;border-radius:8px;padding:2rem;margin:1rem 0;overflow-x:auto}
+.flow-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0.5rem;margin:0.75rem 0}
+.flow-box{background:#1e201e;border:2px solid #c8420a;border-radius:6px;padding:0.6rem 1.2rem;text-align:center;min-width:140px;font-size:0.85rem}
+.flow-box.accent{background:#c8420a;color:#fff;border-color:#c8420a}
+.flow-box.blue{border-color:#0078D4;background:#0a1628}
+.flow-box.green{border-color:#27AE60;background:#0a1e12}
+.flow-box.yellow{border-color:#F39C12;background:#1e1a0a}
+.flow-box.red{border-color:#E74856;background:#1e0a0e}
+.flow-arrow{color:#c8420a;font-size:1.5rem}
+.flow-arrow-down{text-align:center;color:#c8420a;font-size:1.5rem;margin:0.25rem 0}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.85rem}
+th{background:#1a1c1a;color:#c8420a;text-align:left;padding:0.6rem;border:1px solid #2a2d2a}
+td{padding:0.6rem;border:1px solid #2a2d2a;color:#f5f2eb}
+tr:nth-child(even){background:#131513}
+code{background:#1a1c1a;padding:0.15rem 0.4rem;border-radius:3px;font-size:0.85rem;color:#c8420a}
+pre{background:#1a1c1a;padding:1rem;border-radius:6px;overflow-x:auto;margin:0.5rem 0;font-size:0.82rem;color:#f5f2eb;border:1px solid #2a2d2a}
+.checklist{list-style:none;padding:0}.checklist li{padding:0.4rem 0;border-bottom:1px solid #1a1c1a}
+.checklist li::before{content:"[ ] ";color:#c8420a;font-weight:bold}
+.section{margin-bottom:2.5rem}
+footer{border-top:1px solid #2a2d2a;padding-top:1.5rem;margin-top:3rem;color:#666;font-size:0.8rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+
+<span class="badge">Microsoft Azure</span>
+<h1>terraform-azure-virtual-machine-windows</h1>
+
+<div class="section">
+<h2>Executive Summary</h2>
+<p>This Terraform module deploys Azure Windows Virtual Machines with comprehensive enterprise features. It includes automatic NIC and public IP creation, managed OS and data disks with encryption options, availability zone and availability set placement, proximity placement groups, Trusted Launch (Secure Boot + vTPM), built-in extensions (Microsoft Antimalware, Azure Monitor Agent, Azure AD Login), custom extensions, WinRM listener configuration, boot diagnostics, managed identity, Azure Hybrid Benefit licensing, configurable patching modes, and Azure Backup integration. The module supports both marketplace images and custom image IDs.</p>
+</div>
+
+<div class="section">
+<h2>Overview</h2>
+<div class="card-grid">
+<div class="card"><div class="num">9</div><div class="label">Resource Types</div><div class="value">VM, NIC, PIP, Disks, Antimalware, AMA, AAD, Custom Ext, Backup</div></div>
+<div class="card"><div class="num">WS2022</div><div class="label">Default Image</div><div class="value">Windows Server 2022 Datacenter Gen2</div></div>
+<div class="card"><div class="num">4</div><div class="label">Built-in Extensions</div><div class="value">Antimalware, AMA, AAD Login, Custom</div></div>
+<div class="card"><div class="num">40+</div><div class="label">Input Variables</div><div class="value">Comprehensive configuration</div></div>
+<div class="card"><div class="num">12</div><div class="label">Outputs</div><div class="value">VM ID, IPs, identity, NIC, disks</div></div>
+<div class="card"><div class="num">TL</div><div class="label">Trusted Launch</div><div class="value">Secure Boot + vTPM support</div></div>
+</div>
+</div>
+
+<div class="section">
+<h2>Architecture Diagram</h2>
+<div class="arch-diagram">
+<div class="flow-row">
+<div class="flow-box accent">Windows Virtual Machine</div>
+</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-row">
+<div class="flow-box blue">OS Disk</div>
+<div class="flow-box blue">Data Disks</div>
+<div class="flow-box">Network Interface</div>
+</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-row">
+<div class="flow-box yellow">Public IP</div>
+<div class="flow-box green">Subnet / VNet</div>
+<div class="flow-box green">Managed Identity</div>
+</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-row">
+<div class="flow-box red">Antimalware Extension</div>
+<div class="flow-box">Azure Monitor Agent</div>
+<div class="flow-box">Azure AD Login</div>
+<div class="flow-box">Custom Extensions</div>
+</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-row">
+<div class="flow-box">Availability Zone / Set</div>
+<div class="flow-box">Proximity Placement Group</div>
+<div class="flow-box">Boot Diagnostics</div>
+</div>
+<div class="flow-arrow-down">&#9660;</div>
+<div class="flow-row">
+<div class="flow-box red">Recovery Services Vault</div>
+<div class="flow-arrow">&#9654;</div>
+<div class="flow-box red">Backup Policy</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2>Component Breakdown</h2>
+<h3>Windows Virtual Machine</h3>
+<p>Core compute with configurable size (Standard_D2s_v3 default), admin credentials, computer name, source image (marketplace or custom ID), license type for Hybrid Benefit, automatic updates, patch mode (Manual/AutomaticByOS/AutomaticByPlatform), hotpatching, timezone, WinRM listeners, unattend content, and Trusted Launch (Secure Boot + vTPM).</p>
+<h3>Network Interface and Public IP</h3>
+<p>Auto-creates NIC when no network_interface_ids provided. Optional static public IP (Standard SKU) with zone awareness. Supports Dynamic/Static private IP allocation.</p>
+<h3>Data Disks</h3>
+<p>Map-based managed disks with configurable storage type (Premium_LRS), size, caching, LUN, encryption set, tier, and per-disk zone override.</p>
+<h3>Extensions</h3>
+<p><strong>Antimalware:</strong> Microsoft IaaS Antimalware with real-time protection, scheduled scans (Quick/Full), scan day/time, and file/path/process exclusions. <strong>Azure Monitor Agent:</strong> Windows monitoring agent with auto-upgrade. <strong>Azure AD Login:</strong> AAD-based authentication for RDP. <strong>Custom:</strong> Any additional VM extension via map configuration.</p>
+<h3>High Availability</h3>
+<p>Supports availability zones (1, 2, 3), availability sets (cannot combine with zones), and proximity placement groups for latency optimization.</p>
+<h3>Security Features</h3>
+<p>Encryption at host, Trusted Launch (Secure Boot + vTPM), Disk Encryption Sets, managed identity, and Azure AD login for passwordless RDP.</p>
+</div>
+
+<div class="section">
+<h2>Data Flow</h2>
+<ol style="padding-left:1.5rem">
+<li>VM provisions from marketplace image or custom image ID</li>
+<li>NIC is auto-created or externally provided, attached to subnet</li>
+<li>Optional public IP enables inbound connectivity</li>
+<li>Admin authenticates via password or Azure AD (with AAD Login extension)</li>
+<li>Antimalware extension provides real-time protection and scheduled scans</li>
+<li>Azure Monitor Agent collects performance and event logs</li>
+<li>Data disks are attached at specified LUNs</li>
+<li>Boot diagnostics capture serial console for troubleshooting</li>
+<li>Azure Backup takes scheduled snapshots to Recovery Services Vault</li>
+<li>Managed identity enables secure resource access without credentials</li>
+</ol>
+</div>
+
+<div class="section">
+<h2>Security Controls</h2>
+<table>
+<tr><th>Control</th><th>Implementation</th></tr>
+<tr><td>Authentication</td><td>Password + optional Azure AD Login extension</td></tr>
+<tr><td>Encryption at Rest</td><td>Disk Encryption Sets with CMK, encryption at host</td></tr>
+<tr><td>Trusted Launch</td><td>Secure Boot + vTPM for firmware-level security</td></tr>
+<tr><td>Antimalware</td><td>Microsoft IaaS Antimalware with real-time protection</td></tr>
+<tr><td>Identity</td><td>SystemAssigned and UserAssigned managed identities</td></tr>
+<tr><td>Patch Management</td><td>Configurable patch mode and assessment</td></tr>
+<tr><td>Monitoring</td><td>Azure Monitor Agent extension</td></tr>
+<tr><td>Backup</td><td>Azure Backup via Recovery Services Vault</td></tr>
+<tr><td>Network</td><td>Auto-created NIC with optional public IP, subnet integration</td></tr>
+<tr><td>WinRM</td><td>Configurable WinRM listeners with certificate support</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>Industry Adaptation</h2>
+<div class="card-grid">
+<div class="card"><h3>Enterprise Applications</h3><p>Windows Server 2022 with Hybrid Benefit licensing, domain join via custom extension, availability zones, antimalware, full monitoring, daily backup.</p></div>
+<div class="card"><h3>SQL Server Workloads</h3><p>Premium SSD data disks with ReadOnly caching, large VM sizes, disk encryption, proximity placement groups for low latency, backup with SQL-aware policy.</p></div>
+<div class="card"><h3>Remote Desktop Services</h3><p>Azure AD Login for passwordless RDP, WinRM listeners for remote management, multiple zones for HA, antimalware enabled.</p></div>
+<div class="card"><h3>Compliance Environments</h3><p>Trusted Launch enabled, encryption at host, CMK disk encryption, AAD-only auth, full audit via AMA, backup with long retention, disabled public IP.</p></div>
+</div>
+</div>
+
+<div class="section">
+<h2>Production Readiness Checklist</h2>
+<ul class="checklist">
+<li>Enable Trusted Launch (Secure Boot + vTPM)</li>
+<li>Enable encryption at host for data protection</li>
+<li>Configure Disk Encryption Sets with CMK</li>
+<li>Enable Microsoft Antimalware extension</li>
+<li>Enable Azure Monitor Agent for observability</li>
+<li>Place VM in availability zone or availability set</li>
+<li>Configure Azure Backup with appropriate retention</li>
+<li>Use managed identity instead of stored credentials</li>
+<li>Set appropriate patching mode (AutomaticByPlatform recommended)</li>
+<li>Consider Azure AD Login for passwordless authentication</li>
+<li>Disable public IP unless required</li>
+<li>Apply resource tags for governance and cost tracking</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Configuration Reference</h2>
+<h3>Required Variables</h3>
+<table>
+<tr><th>Variable</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>name</code></td><td>string</td><td>VM name (max 15 chars)</td></tr>
+<tr><td><code>resource_group_name</code></td><td>string</td><td>Target resource group</td></tr>
+<tr><td><code>location</code></td><td>string</td><td>Azure region</td></tr>
+<tr><td><code>admin_username</code></td><td>string</td><td>Admin username (no reserved names)</td></tr>
+<tr><td><code>admin_password</code></td><td>string</td><td>Admin password (sensitive)</td></tr>
+</table>
+<h3>Key Optional Variables</h3>
+<table>
+<tr><th>Variable</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>size</code></td><td>string</td><td>Standard_D2s_v3</td><td>VM SKU size</td></tr>
+<tr><td><code>subnet_id</code></td><td>string</td><td>null</td><td>Subnet for auto-created NIC</td></tr>
+<tr><td><code>zone</code></td><td>string</td><td>null</td><td>Availability zone (1/2/3)</td></tr>
+<tr><td><code>os_disk</code></td><td>object</td><td>Premium_LRS</td><td>OS disk configuration</td></tr>
+<tr><td><code>data_disks</code></td><td>map(object)</td><td>{}</td><td>Data disk configurations</td></tr>
+<tr><td><code>enable_antimalware_extension</code></td><td>bool</td><td>false</td><td>Install Antimalware</td></tr>
+<tr><td><code>enable_monitoring_extension</code></td><td>bool</td><td>false</td><td>Install AMA</td></tr>
+<tr><td><code>enable_azure_ad_login</code></td><td>bool</td><td>false</td><td>Enable AAD Login</td></tr>
+<tr><td><code>secure_boot_enabled</code></td><td>bool</td><td>false</td><td>Trusted Launch</td></tr>
+<tr><td><code>backup_policy_id</code></td><td>string</td><td>null</td><td>Backup policy</td></tr>
+</table>
+<h3>Key Outputs</h3>
+<table>
+<tr><th>Output</th><th>Description</th></tr>
+<tr><td><code>vm_id</code></td><td>VM resource ID</td></tr>
+<tr><td><code>vm_name</code></td><td>VM name</td></tr>
+<tr><td><code>private_ip_address</code></td><td>Primary private IP</td></tr>
+<tr><td><code>public_ip_address</code></td><td>Primary public IP</td></tr>
+<tr><td><code>identity</code></td><td>Identity block</td></tr>
+<tr><td><code>data_disk_ids</code></td><td>Map of data disk names to IDs</td></tr>
+</table>
+</div>
+
+<div class="section">
+<h2>Deployment</h2>
+<pre>
+# Initialize Terraform
+terraform init
+
+# Preview changes
+terraform plan -out=tfplan
+
+# Apply configuration
+terraform apply tfplan
+</pre>
+<h3>Prerequisites</h3>
+<ul style="padding-left:1.5rem;margin-top:0.5rem">
+<li>Terraform >= 1.3.0</li>
+<li>AzureRM provider >= 3.80.0</li>
+<li>Existing Resource Group and subnet (or external NIC)</li>
+<li>For backup: Recovery Services Vault and backup policy</li>
+<li>For Trusted Launch: Gen2 image support</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Links</h2>
+<ul style="padding-left:1.5rem">
+<li><a href="https://learn.microsoft.com/en-us/azure/virtual-machines/windows/overview">Azure Windows VM Overview</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch">Trusted Launch</a></li>
+<li><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine">Terraform azurerm_windows_virtual_machine</a></li>
+</ul>
+</div>
+
+<footer>
+<p>terraform-azure-virtual-machine-windows &middot; Architecture Documentation &middot; Generated 2026-03-15</p>
+<p>Terraform Module for Microsoft Azure</p>
+</footer>
+
+</div>
+</body>
+</html>
