@@ -47,13 +47,13 @@ variable "network_interface_ids" {
 }
 
 variable "subnet_id" {
-  description = "The subnet ID for the auto-created NIC. Required if network_interface_ids is empty."
+  description = "The subnet ID for the auto-created NIC (required if network_interface_ids is empty)."
   type        = string
   default     = null
 }
 
 variable "private_ip_address_allocation" {
-  description = "The allocation method for the private IP. Dynamic or Static."
+  description = "The allocation method for the private IP (Dynamic or Static)."
   type        = string
   default     = "Dynamic"
 
@@ -64,7 +64,7 @@ variable "private_ip_address_allocation" {
 }
 
 variable "private_ip_address" {
-  description = "The static private IP address. Only used when allocation is Static."
+  description = "The static private IP address (only used when allocation is Static)."
   type        = string
   default     = null
 }
@@ -76,7 +76,7 @@ variable "create_public_ip" {
 }
 
 variable "public_ip_sku" {
-  description = "The SKU of the public IP. Basic or Standard."
+  description = "The SKU of the public IP (Basic or Standard)."
   type        = string
   default     = "Standard"
 
@@ -103,7 +103,7 @@ variable "source_image_reference" {
 }
 
 variable "source_image_id" {
-  description = "The ID of a custom image to use. Overrides source_image_reference if set."
+  description = "The ID of a custom image to use (overrides source_image_reference if set)."
   type        = string
   default     = null
 }
@@ -141,7 +141,7 @@ variable "data_disks" {
 }
 
 variable "zone" {
-  description = "The availability zone for the VM. Valid values are 1, 2, or 3."
+  description = "The availability zone for the VM (1, 2, or 3)."
   type        = string
   default     = null
 
@@ -152,7 +152,7 @@ variable "zone" {
 }
 
 variable "availability_set_id" {
-  description = "The ID of the availability set. Cannot be used with zones."
+  description = "The ID of the availability set (cannot be used with zones)."
   type        = string
   default     = null
 }
@@ -164,7 +164,7 @@ variable "proximity_placement_group_id" {
 }
 
 variable "license_type" {
-  description = "The license type for the VM. Valid values are None, Windows_Client, Windows_Server."
+  description = "The license type for the VM (None, Windows_Client, or Windows_Server)."
   type        = string
   default     = null
 
@@ -181,7 +181,7 @@ variable "enable_automatic_updates" {
 }
 
 variable "patch_mode" {
-  description = "The patching mode. Valid values are Manual, AutomaticByOS, AutomaticByPlatform."
+  description = "The patching mode (Manual, AutomaticByOS, or AutomaticByPlatform)."
   type        = string
   default     = "AutomaticByOS"
 
@@ -192,7 +192,7 @@ variable "patch_mode" {
 }
 
 variable "patch_assessment_mode" {
-  description = "The patch assessment mode. Valid values are AutomaticByPlatform and ImageDefault."
+  description = "The patch assessment mode (AutomaticByPlatform or ImageDefault)."
   type        = string
   default     = "ImageDefault"
 
@@ -245,7 +245,7 @@ variable "allow_extension_operations" {
 }
 
 variable "computer_name" {
-  description = "The computer name for the VM. Defaults to the VM name."
+  description = "The computer name for the VM (defaults to the VM name)."
   type        = string
   default     = null
 }
@@ -263,7 +263,7 @@ variable "user_data" {
 }
 
 variable "identity_type" {
-  description = "The type of managed identity."
+  description = "The type of managed identity (SystemAssigned, UserAssigned, or both)."
   type        = string
   default     = null
 
@@ -280,7 +280,7 @@ variable "identity_ids" {
 }
 
 variable "boot_diagnostics_storage_account_uri" {
-  description = "The storage account URI for boot diagnostics. Set to empty string for managed storage."
+  description = "The storage account URI for boot diagnostics (null for managed storage)."
   type        = string
   default     = null
 }
@@ -369,7 +369,7 @@ variable "recovery_vault_name" {
 }
 
 variable "backup_resource_group_name" {
-  description = "The resource group of the Recovery Services Vault. Defaults to the VM resource group."
+  description = "The resource group of the Recovery Services Vault (defaults to the VM resource group)."
   type        = string
   default     = null
 }

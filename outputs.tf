@@ -30,22 +30,22 @@ output "computer_name" {
 
 output "network_interface_id" {
   description = "The ID of the auto-created network interface."
-  value       = local.create_nic ? azurerm_network_interface.this[0].id : null
+  value       = length(var.network_interface_ids) == 0 ? azurerm_network_interface.this[0].id : null
 }
 
 output "network_interface_private_ip" {
   description = "The private IP address of the auto-created network interface."
-  value       = local.create_nic ? azurerm_network_interface.this[0].private_ip_address : null
+  value       = length(var.network_interface_ids) == 0 ? azurerm_network_interface.this[0].private_ip_address : null
 }
 
 output "public_ip_id" {
   description = "The ID of the public IP address."
-  value       = var.create_public_ip && local.create_nic ? azurerm_public_ip.this[0].id : null
+  value       = var.create_public_ip && length(var.network_interface_ids) == 0 ? azurerm_public_ip.this[0].id : null
 }
 
 output "public_ip_address_value" {
   description = "The actual public IP address value."
-  value       = var.create_public_ip && local.create_nic ? azurerm_public_ip.this[0].ip_address : null
+  value       = var.create_public_ip && length(var.network_interface_ids) == 0 ? azurerm_public_ip.this[0].ip_address : null
 }
 
 output "data_disk_ids" {
