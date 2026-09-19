@@ -30,30 +30,30 @@ resource "azurerm_network_interface" "this" {
 }
 
 resource "azurerm_windows_virtual_machine" "this" {
-  name                           = var.name
-  resource_group_name            = var.resource_group_name
-  location                       = var.location
-  size                           = var.size
-  admin_username                 = var.admin_username
-  admin_password                 = var.admin_password
-  computer_name                  = var.computer_name != null ? var.computer_name : var.name
-  network_interface_ids          = length(var.network_interface_ids) > 0 ? var.network_interface_ids : [azurerm_network_interface.this[0].id]
-  zone                           = var.zone
-  availability_set_id            = var.availability_set_id
-  proximity_placement_group_id   = var.proximity_placement_group_id
-  license_type                   = var.license_type
-  enable_automatic_updates       = var.enable_automatic_updates
-  patch_mode                     = var.patch_mode
-  patch_assessment_mode          = var.patch_assessment_mode
-  hotpatching_enabled            = var.hotpatching_enabled
-  timezone                       = var.timezone
-  provision_vm_agent             = var.provision_vm_agent
-  encryption_at_host_enabled     = var.encryption_at_host_enabled
-  secure_boot_enabled            = var.secure_boot_enabled
-  vtpm_enabled                   = var.vtpm_enabled
-  allow_extension_operations     = var.allow_extension_operations
-  custom_data                    = var.custom_data
-  user_data                      = var.user_data
+  name                         = var.name
+  resource_group_name          = var.resource_group_name
+  location                     = var.location
+  size                         = var.size
+  admin_username               = var.admin_username
+  admin_password               = var.admin_password
+  computer_name                = var.computer_name != null ? var.computer_name : var.name
+  network_interface_ids        = length(var.network_interface_ids) > 0 ? var.network_interface_ids : [azurerm_network_interface.this[0].id]
+  zone                         = var.zone
+  availability_set_id          = var.availability_set_id
+  proximity_placement_group_id = var.proximity_placement_group_id
+  license_type                 = var.license_type
+  enable_automatic_updates     = var.enable_automatic_updates
+  patch_mode                   = var.patch_mode
+  patch_assessment_mode        = var.patch_assessment_mode
+  hotpatching_enabled          = var.hotpatching_enabled
+  timezone                     = var.timezone
+  provision_vm_agent           = var.provision_vm_agent
+  encryption_at_host_enabled   = var.encryption_at_host_enabled
+  secure_boot_enabled          = var.secure_boot_enabled
+  vtpm_enabled                 = var.vtpm_enabled
+  allow_extension_operations   = var.allow_extension_operations
+  custom_data                  = var.custom_data
+  user_data                    = var.user_data
 
   os_disk {
     caching                          = var.os_disk.caching
@@ -147,8 +147,8 @@ resource "azurerm_virtual_machine_extension" "antimalware" {
   auto_upgrade_minor_version = true
 
   settings = jsonencode({
-    AntimalwareEnabled          = true
-    RealtimeProtectionEnabled   = var.antimalware_settings.real_time_protection_enabled ? "true" : "false"
+    AntimalwareEnabled        = true
+    RealtimeProtectionEnabled = var.antimalware_settings.real_time_protection_enabled ? "true" : "false"
     ScheduledScanSettings = {
       isEnabled = var.antimalware_settings.scheduled_scan_enabled ? "true" : "false"
       scanType  = var.antimalware_settings.scheduled_scan_type
