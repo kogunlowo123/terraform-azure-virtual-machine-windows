@@ -42,7 +42,7 @@ resource "azurerm_windows_virtual_machine" "this" {
   availability_set_id          = var.availability_set_id
   proximity_placement_group_id = var.proximity_placement_group_id
   license_type                 = var.license_type
-  enable_automatic_updates     = var.enable_automatic_updates
+  automatic_updates_enabled    = var.enable_automatic_updates
   patch_mode                   = var.patch_mode
   patch_assessment_mode        = var.patch_assessment_mode
   hotpatching_enabled          = var.hotpatching_enabled

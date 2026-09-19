@@ -146,7 +146,7 @@ variable "zone" {
   default     = null
 
   validation {
-    condition     = var.zone == null || contains(["1", "2", "3"], var.zone)
+    condition     = var.zone == null ? true : contains(["1", "2", "3"], var.zone)
     error_message = "Zone must be 1, 2, or 3."
   }
 }
@@ -169,7 +169,7 @@ variable "license_type" {
   default     = null
 
   validation {
-    condition     = var.license_type == null || contains(["None", "Windows_Client", "Windows_Server"], var.license_type)
+    condition     = var.license_type == null ? true : contains(["None", "Windows_Client", "Windows_Server"], var.license_type)
     error_message = "License type must be None, Windows_Client, or Windows_Server."
   }
 }
@@ -268,7 +268,7 @@ variable "identity_type" {
   default     = null
 
   validation {
-    condition     = var.identity_type == null || contains(["SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned"], var.identity_type)
+    condition     = var.identity_type == null ? true : contains(["SystemAssigned", "UserAssigned", "SystemAssigned, UserAssigned"], var.identity_type)
     error_message = "Identity type must be SystemAssigned, UserAssigned, or 'SystemAssigned, UserAssigned'."
   }
 }

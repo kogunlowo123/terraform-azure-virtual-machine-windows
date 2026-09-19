@@ -40,7 +40,6 @@ resource "azurerm_recovery_services_vault" "example" {
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
   sku                 = "Standard"
-  soft_delete_enabled = false
 }
 
 resource "azurerm_backup_policy_vm" "example" {
